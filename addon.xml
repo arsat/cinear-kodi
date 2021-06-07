@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="plugin.video.cinear"
+       name="Cinear" version="0.0.9"
+       provider-name="ARSAT">
+    <requires>
+        <import addon="xbmc.python" version="3.0.0"/>
+        <import addon="script.module.requests" version="2.9.1"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="addon.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en">CINE.AR PLAY</summary>
+        <description lang="en">CINE AR PLAY is the free video on demand platform where you will find the best Argentine content. Films and series, documentaries and shorts, new looks and classics, always to enjoy from any device.</description>
+        <summary lang="es">CINE.AR PLAY</summary>
+        <description lang="es">CINE AR PLAY es la plataforma de video a demanda gratuita para ver todos los contenidos nacionales donde quieras, cuando quieras. Las películas y las series, los documentales y los cortos, las nuevas miradas y los clásicos de siempre para disfrutarlos desde cualquier dispositivo.</description>
+        <disclaimer lang="es">Los contenidos audiovisuales de la plataforma CINE.AR PLAY Y CINE.AR ESTRENOS pueden contener escenas no aptas para todo público. Se recomienda la supervisión de un mayor. El uso de CINEAR y de este sitio web implica la aceptación de nuestros Términos de uso y de nuestra Política de privacidad. Todos los derechos reservados 2003–2015. República Argentina, Instituto Nacional de Cine y Artes Audiovisuales. Lima 319; Código Postal: C1073AAG, CABA; República Argentina.</disclaimer>
+        <language>es</language>
+        <platform>all</platform>
+        <license>GNU General Public License, Version 3</license>
+        <source>https://github.com/arsat/cinear-kodi</source>
+        <forum>http://forum.kodi.tv/showthread.php?tid=296742</forum>
+        <website>https://play.cine.ar/</website>
+        <email>ayuda.play@cine.ar</email>
+        <assets>
+            <icon>resources/icon.png</icon>
+            <fanart>resources/fanart.jpg</fanart>
+            <screenshot>resources/screenshot-01.jpg</screenshot>
+            <screenshot>resources/screenshot-02.jpg</screenshot>
+            <screenshot>resources/screenshot-03.jpg</screenshot> 
+        </assets>
+        <news>Updated to Python 3</news>
+    </extension>
+</addon>
