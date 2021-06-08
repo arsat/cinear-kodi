@@ -77,12 +77,12 @@ msgid "Featured"
 msgstr "Destacados"
 
 msgctxt "#30021"
-msgid "Add to mi sala"
-msgstr "Agregar a mi sala"
+msgid "Add to Mi Sala"
+msgstr "Agregar a Mi Sala"
 
 msgctxt "#30022"
-msgid "Delete from mi sala"
-msgstr "Quitar de mi sala"
+msgid "Delete from Mi Sala"
+msgstr "Quitar de Mi Sala"
 
 msgctxt "#30023"
 msgid "Rate..."

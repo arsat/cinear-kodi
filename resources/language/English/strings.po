@@ -77,11 +77,11 @@ msgid "Featured"
 msgstr ""
 
 msgctxt "#30021"
-msgid "Add to mi sala"
+msgid "Add to Mi Sala"
 msgstr ""
 
 msgctxt "#30022"
-msgid "Delete from mi sala"
+msgid "Delete from Mi Sala"
 msgstr ""
 
 msgctxt "#30023"
