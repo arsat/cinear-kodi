@@ -101,7 +101,7 @@ def list_profiles():
 
 def get_media(title):
     media = {"culas": "movies.png", "Serie": "series.png", "Corto": "shorts.png", "Especial": "specials.png", "Estreno": "premieres.png"}
-    for k, v in media.items():
+    for k, v in list(media.items()):
         if k in title:
             return v
     return "movies.png"
