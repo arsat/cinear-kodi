@@ -25,8 +25,8 @@ addon_icon = addon.getAddonInfo('icon')
 addon_version = addon.getAddonInfo('version')
 art_path = os.path.join(addon.getAddonInfo('path'), 'resources', 'media')
 
-META = None  # se obtiene con GET /metadata
-PID  = None  # se recibe siempre vía params
+META = None  # result of GET /metadata
+PID  = None  # received always via params
 
 
 def digest(data):
@@ -70,7 +70,7 @@ def add_directory_item(name, query, image=None, isFolder=True, art=None, info=No
 
 
 def list_profiles():
-    # obtiene los perfiles
+    # get the list of profiles of a user
     profiles = None
     if addon.getSetting('token') != '':
         profiles = json_request('user')
@@ -78,13 +78,13 @@ def list_profiles():
         if not init_session(): return
         profiles = json_request('user')
 
-    # verifica si cambiaron los términos y condiciones
+    # check if terms and conditions were accepted
     if profiles['torAccept']['mustAccept']:
         xbmcgui.Dialog().ok(translation(30004), translation(30005))
         xbmc.executebuiltin('ActivateWindow(Videos,addons://sources/video/)')
         return
 
-    # si hay un único perfil lo selecciona
+    # if there is only one profile, go ahead
     if len(profiles['perfiles']) == 1:
         profile =  profiles['perfiles'][0]
         global PID
@@ -92,7 +92,7 @@ def list_profiles():
         root_menu({'pid': profile['id'], 'alias': profile['alias'], 'conclave': profile.get('conclave')})
         return
 
-    # arma la lista de perfiles
+    # or prepare a list to choose a profile
     for profile in profiles['perfiles']:
         query = f"root_menu&pid={profile['id']}&alias={profile['alias'].encode('utf-8')}&conclave={profile.get('conclave')}"
         add_directory_item(profile['alias'], query, art={"poster": image_url(profile['avatar'], 'avatar')})
@@ -111,7 +111,7 @@ def root_menu(params):
     if params['conclave'] == 'True':
         pin = xbmcgui.Dialog().input(translation(30006) + params['alias'], type=xbmcgui.INPUT_NUMERIC)
         if pin == '': return
-        # valida el pin
+        # validate pin if required (pins are optional)
         path = f"perfil/{PID}/clave/{pin}"
         response = json_request(path)
         valid = response['valid']
@@ -121,19 +121,19 @@ def root_menu(params):
 
     # Home / Inicio
     add_directory_item(translation(30009), 'list_tiras', 'explore.png')
-    # Últimas vistas
+    # Last seen / Últimas vistas
     add_directory_item(translation(30010), 'list_prods&url=%s' % quote('tira/histoprods'), 'last-seen.png')
-    # Películas, Series, Cortos, Especiales para perfiles no infantiles
+    # Movies, TV Shows, Shorts, Featured
     categories = json_request(f"navbar?perfil={PID}")
     for tipo in sorted(categories['tipos'], key=lambda cat: cat['orden']):
         add_directory_item(tipo['text'], 'list_prods&url=%s' % quote('tipo/' + tipo['tag']), get_media(tipo['text']))
-    # Explorar
+    # Explore
     add_directory_item(translation(30011), 'list_generos', 'explore.png')
     # Mi sala
     add_directory_item(translation(30012), 'list_prods&url=%s' % quote('tira/misala'), 'mi-sala.png')
-    # Búsqueda
+    # Search / Búsqueda
     add_directory_item(translation(30013), 'search', 'search.png')
-    # Cerrar sesión
+    # Close session
     add_directory_item(translation(30014), 'close_session', 'close-session.png', False)
 
     xbmcplugin.endOfDirectory(addon_handle)
@@ -141,10 +141,10 @@ def root_menu(params):
 
 def list_tiras(params):
     """ Explorar por tiras """
-    # primero los destacados, aka banner
+    # first featured, aka banner
     add_directory_item(translation(30015), 'list_prods&url=%s' % quote('tira/banner'), 'movies.png')
 
-    # tiras dinámicas
+    # then add dynamic content (tira)
     for tira in json_request(f"tiras?perfil={PID}"):
         add_directory_item(tira['titulo'], 'list_prods&url=%s' % quote('tira/' + str(tira['id'])), get_media(tira['titulo']))
 
@@ -169,7 +169,7 @@ def close_session(params):
 
 def list_prods(params):
     """ Arma la lista de producciones del menu principal """
-    # parámetros optativos
+    # optional parameters
     items = int(addon.getSetting('itemsPerPage'))
     page = int(params.get('pag', '1'))
     orden = params.get('orden')
@@ -181,7 +181,7 @@ def list_prods(params):
     if orden: path += f"&orden={orden}"
     prod_list = json_request(path)
 
-    # lista todo menos temporadas, episodios y elementos de compilados
+    # list everything but seasons, episodes y compiled elements
     for prod in prod_list['prods']:
         add_film_item(prod, params)
 
@@ -197,35 +197,35 @@ def list_subprods(params):
     """ Arma la lista de producciones para series y compilados (especiales) """
     path = f"{params['source']}/prod/{params['sid']}?perfil={PID}"
     # 'items' restringe por temporada en caso de cabeserie
-    season = params.get('season')   # temporada seleccionada o None
+    season = params.get('season')   # selected season or None
     if params.get('full'):
         path += '&items=' + str(season or 0)
     prod_list = json_request(path)
 
     if prod_list['tipos'][0]['tag'] == 'cabeserie':
 
-        # set comprehension falla en ARM: seasons = {epi['tempo'] for epi in prod_list['items']}
+        # set comprehension fails in ARM (in 2016): seasons = {epi['tempo'] for epi in prod_list['items']}
         seasons = list(set([epi.get('tempo') or epi['capitulo']['tempo'] for epi in prod_list['items']]))
 
         if season:
-            # lista capítulos de temporada
+            # list all episodes for a season
             for episode in prod_list['items']:
                 add_film_item(episode, params)
 
         elif len(seasons) > 1:
-            # lista temporadas para que el usuario elija
+            # list all seasons
             for season in sorted(seasons):
                 query = 'list_subprods&source={0}&sid={1}&season={2}&full={3}'.format(params['source'], params['sid'], season, 1)
                 art = {'fanart': image_url(prod_list.get('ban'), 'odeon_slider')}
                 add_directory_item('Temporada {0}'.format(season), query, 'series.png', art=art, info=get_info(prod_list))
         else:
-            # hay una sola temporada
+            # there is only one season
             params['full'] = '1'
             params['season'] = seasons[0]
             return list_subprods(params)
 
     else:
-        # lista compilados dentro de especiales
+        # list compiled inside specials
         for compi in prod_list['items']:
             add_film_item(compi, params)
 
@@ -296,27 +296,26 @@ def add_film_item(prod, params):
     if has_subprods: art.update({'fanart': None})
     item.setArt(art)
 
-    percen = 100 * prod['vista']['secsTranscu'] / prod['vista']['secsDura'] if prod['vista']['secsDura'] > 0 else 0
-    resumeTime = prod['vista']['secsTranscu'] if 1 < percen < 95 else 0
+    percent = 100 * prod['vista']['secsTranscu'] / prod['vista']['secsDura'] if prod['vista']['secsDura'] > 0 else 0
+    resumeTime = prod['vista']['secsTranscu'] if 1 < percent < 95 else 0
     item.setProperty('ResumeTime', str(resumeTime))
     item.setProperty('TotalTime', str(prod['vista']['secsDura']))
 
     context_menu = []
 
-    # agregar/quitar a mi sala: no para capitulos, sí para todos los demás
+    # Add/Remove for Mi Sala should not be available for episodes
     if 'serie' not in prod['tags']:
         menu_text = translation(30021) if not prod.get('misala') else translation(30022)
         context_menu.append((menu_text, run_plugin('toggle_misala', prod, params)))
 
-    # calificar: no para capítulos ni cabecera de compilados
+    # Qualify should not be available for episodes nor compiled (cabecera)
     if 'serie' not in prod['tags'] and 'compi' not in prod['tags']:
         context_menu.append((translation(30023), run_plugin('user_qualify', prod, params)))
 
-    # ordenar: no para capítulos ni para elementos de compilados
+    # Order by should not be available for episodes nor compiled elements
     if 'url' in params:
         context_menu.append((translation(30024), run_plugin('sort&url=%s' % quote(params['url']), prod, params)))
 
-    # agrega los menues contextuales
     item.addContextMenuItems(context_menu, replaceItems=True)
 
     if has_subprods:
@@ -327,7 +326,7 @@ def add_film_item(prod, params):
     else:
         url = '{0}?action={1}&pid={2}&source={3}&sid={4}'.format(
                 addon_url, 'play', PID, prod['id']['source'], prod['id']['sid'])
-        item.setProperty('IsPlayable', 'true') # necesario solo si se usa xbmcplugin.setResolvedUrl()
+        item.setProperty('IsPlayable', 'true') # needed only when use with xbmcplugin.setResolvedUrl()
         item.addStreamInfo('video', {'codec': 'h264'})
         item.addStreamInfo('audio', {'codec': 'aac', 'language' : 'es'})
         is_folder = False
@@ -342,7 +341,6 @@ def toggle_misala(params):
 
 
 def user_qualify(params):
-    # mi calificación es
     voto = xbmcgui.Dialog().select(translation(30025), ['1', '2', '3', '4', '5'])
     if voto == -1: return
     path = '{0}/votar/{1}/{2}?voto={3}'.format(params['source'], PID, params['sid'], voto + 1)
@@ -355,7 +353,6 @@ def user_qualify(params):
 
 
 def sort(params):
-    # ordenar los ítems
     order_names = [ord['nom'] for ord in META['order']]
     order_ids = [ord['id'] for ord in META['order']]
     index = xbmcgui.Dialog().select(translation(30026), order_names)
@@ -365,7 +362,7 @@ def sort(params):
 
 
 def search(params):
-    # título, director, actor...
+    # search by title, director, actor...
     texto = xbmcgui.Dialog().input(translation(30027))
     if texto == '': return
     params['url'] = 'search/' + quote(texto)
@@ -383,14 +380,14 @@ def monitor(source, sid):
     player = xbmc.Player()
     monitor = xbmc.Monitor()
 
-    # esperamos a que el player comience
+    # wait for the player to start
     for i in range(60):
         if player.isPlayingVideo(): break
         if monitor.waitForAbort(1): break
 
     if monitor.abortRequested(): return
     if not player.isPlayingVideo():
-        # problemas en la reproducción, debe reintentar
+        # not reproducing, must retry
         xbmcgui.Dialog().ok(addon_name, translation(30028))
         return
 
@@ -406,7 +403,7 @@ def monitor(source, sid):
             beatTime = currentTime
 
         elif currentTime >= beatTime + 60:
-            # informa el minuto visto
+            # track minute seen to backend
             heartbeat(source, sid, currentTime, totalTime)
             beatTime += 60
 
@@ -452,16 +449,6 @@ def make_url(path, data=None):
     return url
 
 
-def time_to_live(control):
-    """ Devuelve la cantidad de segundos extraidos de: max-age=5,public """
-    if not control:
-        return 0
-    par = control.split(',')[0].split('=')
-    if len(par) < 2 or par[0].lower() != 'max-age':
-        return 0
-    return int(par[1])
-
-
 def decode_json(response):
     try:
         data = json.loads(response.content)
@@ -482,16 +469,15 @@ def show_error(title, status, message):
 
 
 def json_request(path, params=None):
-    """ Emula el comportamiento de un browser """
     token = addon.getSetting('token')
     url = make_url(path, params)
 
     r = requests.get(url, headers=get_headers(token, gzip=True))
 
     if r.status_code == 401:
-        # 'user' se usa en el login para validar tokens
+        # special case used during login to test a token
         if path == 'user': return None
-        # si el token expira durante la navegación debe volver a ingresar
+        # in the very unlikely situation token expires, user must restart
         xbmcgui.Dialog().ok(translation(30029), translation(30030))
         close_session([])
         sys.exit(0)
