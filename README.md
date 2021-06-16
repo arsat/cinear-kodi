@@ -16,4 +16,4 @@ CINE.AR PLAY es la plataforma de video a demanda gratuita para ver todos los con
 ### Addtional information
 - https://play.cine.ar/
 - https://github.com/arsat/cinear-kodi/
-- http://forum.kodi.tv/showthread.php?tid=296742
+- https://forum.kodi.tv/showthread.php?tid=296742
