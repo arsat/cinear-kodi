@@ -32,8 +32,8 @@ PID  = None  # received always via params
 def digest(data):
     digest = hashlib.md5(data.encode('utf-8')).digest()
     return base64.b64encode(digest)
-    
-    
+
+
 def translation(id):
     return addon.getLocalizedString(id).encode('utf-8')
 
@@ -424,10 +424,10 @@ def play(params):
             xbmcplugin.setResolvedUrl(addon_handle, True, item)
             monitor(params['source'], params['sid'])
         else:
-            show_error('Error Player', response.status_code, translation(30035))
+            show_error(translation(30036), response.status_code, translation(30035))
             xbmc.sleep(1000)
     else:
-        show_error('Error Player', response.status_code, errmsg)
+        show_error(translation(30036), response.status_code, errmsg)
 
 
 def get_headers(token=None, etag=None, auth=None, gzip=False):
@@ -461,7 +461,7 @@ def decode_json(response):
 
 
 def show_error(title, status, message):
-    try:  
+    try:
         xbmc.log(f"ERROR [{PLUGIN_NAME}]: {title} - code ({status}) - {message.encode('utf8', 'ignore')}", level=xbmc.LOGDEBUG)
         xbmcgui.Dialog().ok(f"{title} ({status})", message)
     except:
@@ -484,14 +484,14 @@ def json_request(path, params=None):
 
     # raise for status
     elif r.status_code >= 400:
-        show_error('Error Request', r.status_code, r.content)
+        show_error(translation(30037), r.status_code, r.content)
         close_session([])
         sys.exit(0)
 
     if not r.content: return None
     data, errmsg = decode_json(r)
     if not data:
-        show_error('Error Request', r.status_code, errmsg)
+        show_error(translation(30037), r.status_code, errmsg)
         sys.exit(0)
     return data
 

@@ -29,7 +29,7 @@ msgstr "Términos y condiciones"
 
 msgctxt "#30005"
 msgid "The terms and coditions have changed. Please visit play.cine.ar to accept them."
-msgstr "Informamos que hay una nueva versión de los términos y condiciones. Visite play.cine.ar para aceptarlos."
+msgstr "Hay una nueva versión de los términos y condiciones. Visite play.cine.ar para aceptarlos."
 
 msgctxt "#30006"
 msgid "Enter PIN for "
@@ -125,11 +125,19 @@ msgstr "Estrenos"
 
 msgctxt "#30034"
 msgid "To rent a production, please do so from the webpage."
-msgstr "Para alquilar, por favor hágalo desde la web."
+msgstr "Para alquilar por favor hágalo desde la web."
 
 msgctxt "#30035"
 msgid "Movie unavailable. Please retry later."
 msgstr "Película no disponible. Reintente más tarde."
+
+msgctxt "#30036"
+msgid "Error Player"
+msgstr "Error del reproductor"
+
+msgctxt "#30037"
+msgid "Error Request"
+msgstr "Error de petición"
 
 msgctxt "#30100"
 msgid "General"
@@ -137,4 +145,4 @@ msgstr "General"
 
 msgctxt "#30101"
 msgid "Items per page"
-msgstr "Items por página"
+msgstr "Ítems por página"

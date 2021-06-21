@@ -13,11 +13,11 @@ msgstr ""
 
 msgctxt "#30001"
 msgid "Enter your e-mail address"
-msgstr "Ingrese su dirección de correo electrónico"
+msgstr "Ingresá tu dirección de correo electrónico"
 
 msgctxt "#30002"
 msgid "Enter your password"
-msgstr "Ingrese su contraseña"
+msgstr "Ingresá tu contraseña"
 
 msgctxt "#30003"
 msgid "Login"
@@ -29,11 +29,11 @@ msgstr "Términos y condiciones"
 
 msgctxt "#30005"
 msgid "The terms and coditions have changed. Please visit play.cine.ar to accept them."
-msgstr "Informamos que hay una nueva versión de los términos y condiciones. Visite play.cine.ar para aceptarlos."
+msgstr "Hay una nueva versión de los términos y condiciones. Visitá play.cine.ar para aceptarlos."
 
 msgctxt "#30006"
 msgid "Enter PIN for "
-msgstr "Ingrese el PIN de "
+msgstr "Ingresá el PIN de "
 
 msgctxt "#30007"
 msgid "Profile selection"
@@ -101,7 +101,7 @@ msgstr "Título, Director, Actor..."
 
 msgctxt "#30028"
 msgid "Cannot reproduce, try later"
-msgstr "Problemas en la reproducción, reintente nuevamente."
+msgstr "Problemas en la reproducción, reintentá nuevamente."
 
 msgctxt "#30029"
 msgid "Session has expired"
@@ -109,7 +109,7 @@ msgstr "Sesión expirada"
 
 msgctxt "#30030"
 msgid "Please login again."
-msgstr "Por favor vuelva a ingresar."
+msgstr "Por favor volvé a ingresar."
 
 msgctxt "#30031"
 msgid "Next..."
@@ -125,11 +125,19 @@ msgstr "Estrenos"
 
 msgctxt "#30034"
 msgid "To rent a production, please do so from the webpage."
-msgstr "Para alquilar, por favor hágalo desde la web."
+msgstr "Para alquilar por favor hacelo desde la web."
 
 msgctxt "#30035"
 msgid "Movie unavailable. Please retry later."
-msgstr "Película no disponible. Reintente más tarde."
+msgstr "Película no disponible. Reintentá más tarde."
+
+msgctxt "#30036"
+msgid "Error Player"
+msgstr "Error Player"
+
+msgctxt "#30037"
+msgid "Error Request"
+msgstr "Error Request"
 
 msgctxt "#30100"
 msgid "General"
@@ -137,4 +145,4 @@ msgstr "General"
 
 msgctxt "#30101"
 msgid "Items per page"
-msgstr "Items por página"
+msgstr "Ítems por página"
